@@ -1,0 +1,37 @@
+echo "const form = document.getElementById('agendaForm');
+const lista = document.getElementById('listaAttività');
+
+form.addEventListener('submit', function(e) {
+  e.preventDefault();
+  const attività = document.getElementById('attività').value;
+  const referente = document.getElementById('referente').value;
+  const dataOra = document.getElementById('dataOra').value;
+  const note = document.getElementById('note').value;
+  const documento = document.getElementById('documento').files[0];
+
+  const div = document.createElement('div');
+  div.className = 'attività';
+  div.innerHTML = `
+    <h3>${attività}</h3>
+    <p><strong>Referente:</strong> ${referente}</p>
+    <p><strong>Programmato per:</strong> ${new Date(dataOra).toLocaleString()}</p>
+    <p><strong>Note:</strong> ${note}</p>
+    ${documento ? `<p><strong>Documento:</strong> <span class='doc-link'>${documento.name}</span></p>` : ''}
+  `;
+
+  if (documento) {
+    const reader = new FileReader();
+    reader.onload = function(event) {
+      const link = div.querySelector('.doc-link');
+      link.addEventListener('click', () => {
+        const blob = new Blob([event.target.result], { type: documento.type });
+        const url = URL.createObjectURL(blob);
+        window.open(url);
+      });
+    };
+    reader.readAsArrayBuffer(documento);
+  }
+
+  lista.appendChild(div);
+  form.reset();
+});" > script.js
